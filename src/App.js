@@ -1,24 +1,15 @@
 import React, { Component } from 'react'
-import logo from './logo.svg'
 import './App.css'
 
 class App extends Component {
   render() {
     return (
-      <div className="App bg-red">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+      <div className="App bg-grey-light">
+        <header className="App-header py-20">
+          <div className="container mx-auto">
+            <h1 class="text-5xl text-white pb-2">Have an idea?</h1>
+            <p class="text-white text-xl font-light opacity-75">Hi there.</p>
+          </div>
         </header>
       </div>
     )
