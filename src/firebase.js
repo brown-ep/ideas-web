@@ -1,4 +1,7 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
+import 'firebase/firestore'
 
 var config = {
   apiKey: 'AIzaSyDNOXCCYb7VulBQx3sNFZ-ORaYEsvRRGP4',
@@ -10,4 +13,6 @@ var config = {
 }
 
 const fire = firebase.initializeApp(config)
+fire.firestore().settings({ timestampsInSnapshots: true })
+
 export default fire

@@ -22,7 +22,6 @@ export const Login = ({ firebase, auth }) => (
           <a href="#logout" onClick={() => firebase.logout()}>
             Logout
           </a>
-          <pre>{JSON.stringify(auth, null, 2)}</pre>
         </div>
       )}
     </div>
