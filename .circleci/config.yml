@@ -21,7 +21,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run
+      - ? run
         name: Build app in production mode
         command: |
           yarn build
@@ -36,13 +36,13 @@ jobs:
           command: ./node_modules/.bin/firebase deploy --token="1/HPEt_LksFv0CzOXpsn6_tPZdlmvrs-11NDG2bahsD-A"
 
 workflows:
-      version: 2
-      -deploy:
-        jobs:
-          - build-job
-          - deploy-job:
-              requires:
-                - build-job
-              filters:
-                branches:
-                  only: master
+  version: 2
+  -deploy:
+    jobs:
+      - build-job
+      - deploy-job:
+          requires:
+            - build-job
+          filters:
+            branches:
+              only: master
