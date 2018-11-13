@@ -21,7 +21,8 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      -run:
+
+      - run:
         name: Build app in production mode
         command: |
           yarn build
