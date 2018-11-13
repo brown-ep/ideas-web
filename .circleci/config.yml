@@ -23,9 +23,9 @@ jobs:
       # run tests!
 
       - run:
-        name: Build app in production mode
-        command: |
-          yarn build
+          name: Build app in production mode
+          command: |
+            yarn build
 
   deploy-job:
     docker:
