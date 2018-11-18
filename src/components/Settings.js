@@ -2,9 +2,12 @@ import React, { Component } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded, withFirebase } from 'react-redux-firebase'
+import IdeaList from './IdeaList'
 
 class Settings extends Component {
-  state = {}
+  state = {
+    ideas: [],
+  }
 
   tags = () => {
     const { profile } = this.props
@@ -26,6 +29,35 @@ class Settings extends Component {
     } else {
       firebase.updateProfile({ tags: [...cur, id] })
     }
+  }
+
+  loadIdeas = () => {
+    const { likes } = this.props
+    if (!likes) return
+
+    let promises = []
+    likes.forEach(({ id }) => {
+      promises.push(
+        this.props.firestore
+          .collection('ideas')
+          .doc(id)
+          .get()
+      )
+    })
+
+    Promise.all(promises).then(vals => {
+      let real = vals.filter(v => v.exists)
+      real = real.map(doc => doc.data())
+      this.setState({ ideas: real })
+    })
+  }
+
+  componentDidMount() {
+    this.loadIdeas()
+  }
+
+  componentDidUpdate() {
+    this.loadIdeas()
   }
 
   render() {
@@ -56,6 +88,12 @@ class Settings extends Component {
               </a>
             ))}
         </div>
+
+        <h1 className="font-black mb-8 mt-16 block">Liked Ideas</h1>
+
+        <div className="-mx-1 -my-2">
+          {this.state.ideas && <IdeaList ideas={this.state.ideas} />}
+        </div>
       </div>
     )
   }
@@ -63,7 +101,7 @@ class Settings extends Component {
 
 export default compose(
   withFirebase,
-  firestoreConnect(['tags']), // or { collection: 'todos' }
+  firestoreConnect(['tags', 'ideas']), // or { collection: 'todos' }
   connect(({ firestore, firebase: auth }, props) => ({
     tags: firestore.ordered.tags,
     profile: auth.profile,

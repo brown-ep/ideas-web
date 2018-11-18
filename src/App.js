@@ -5,9 +5,8 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firestoreConnect, withFirebase } from 'react-redux-firebase'
+import { firestoreConnect } from 'react-redux-firebase'
 
-import IdeaList from './components/IdeaList'
 import Navbar from './components/Navbar'
 import NewIdeaForm from './components/NewIdeaForm'
 import Settings from './components/Settings'
@@ -15,6 +14,7 @@ import PrivateRoute from './containers/PrivateRoute'
 import LoginForm from './components/LoginForm'
 import NoAuthRoute from './containers/NoAuthRoute'
 import Home from './pages/Home'
+import UserIdeas from './containers/UserIdeas'
 import SearchResults from './containers/SearchResults'
 
 class App extends Component {
@@ -33,6 +33,7 @@ class App extends Component {
           <NoAuthRoute path="/login" component={LoginForm} />
           <PrivateRoute path="/new" component={NewIdeaForm} />
           <PrivateRoute path="/settings" component={Settings} />
+          <PrivateRoute path="/ideas" component={UserIdeas} />
         </Switch>
       </div>
     )

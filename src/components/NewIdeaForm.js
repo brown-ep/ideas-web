@@ -14,14 +14,28 @@ class NewIdeaForm extends Component {
   state = {
     name: '',
     description: '',
+    selectedTags: [],
     redirect: false,
   }
 
   handleNameChange = e => this.setState({ name: e.target.value })
   handleDescChange = e => this.setState({ description: e.target.value })
 
+  tagActive = id => this.state.selectedTags.indexOf(id) !== -1
+
+  toggleTag = id => {
+    let cur = this.state.selectedTags
+
+    if (this.tagActive(id)) {
+      cur = cur.filter(val => val !== id)
+      this.setState({ selectedTags: cur })
+    } else {
+      this.setState({ selectedTags: [...cur, id] })
+    }
+  }
+
   savePost = () => {
-    const { name, description } = this.state
+    const { name, description, selectedTags } = this.state
     const { firestore, auth, firebase } = this.props
 
     firestore
@@ -30,7 +44,8 @@ class NewIdeaForm extends Component {
         title: name,
         description,
         name: auth.displayName,
-        user: firestore.collection('users').doc(auth.uid),
+        user: auth.uid,
+        tags: selectedTags,
         created: new Date(),
       })
       .then(() => this.setState({ redirect: true }))
@@ -40,7 +55,8 @@ class NewIdeaForm extends Component {
       })
   }
 
-  handlePost = () => {
+  handlePost = e => {
+    e && e.preventDefault()
     const { auth, firebase } = this.props
 
     if (!isLoaded(auth) || isEmpty(auth)) {
@@ -58,7 +74,10 @@ class NewIdeaForm extends Component {
       return <Redirect to="/" />
     }
     return (
-      <div className="container max-w-md mx-auto">
+      <form
+        onSubmit={this.handlePost}
+        className="container max-w-md mx-auto pb-16"
+      >
         <h1 className="text-grey-darkest text-5xl font-black mb-2">New Idea</h1>
         <p className="leading-normal text-grey-darkest font-light text-xl mb-5">
           Have an idea? Fill out a basic description and post to get feedback
@@ -74,6 +93,7 @@ class NewIdeaForm extends Component {
           </label>
           <input
             type="text"
+            required
             value={this.state.name}
             onChange={this.handleNameChange}
             className="px-2 py-4 shadow rounded-sm outline-none block w-full"
@@ -91,25 +111,54 @@ class NewIdeaForm extends Component {
           <textarea
             className="px-2 py-3 shadow rounded-sm outline-none block w-full h-32"
             maxLength={280}
+            required
             value={this.state.description}
             onChange={this.handleDescChange}
             id="description"
           />
         </div>
 
+        <div className="mb-5">
+          <label className="text-sm text-grey-darker font-bold uppercase block mb-2">
+            Tags
+          </label>
+          <div className="-mx-1 -my-2">
+            {this.props.tags &&
+              this.props.tags.map(tag => (
+                <a
+                  href="#toggle"
+                  onClick={e => {
+                    e.preventDefault()
+                    this.toggleTag(tag.id)
+                  }}
+                  className={
+                    'p-2 bg-white no-underline shadow outline-none appearance-none text-grey-dark inline-block mx-1 my-2 rounded-sm font-bold ' +
+                    (this.tagActive(tag.id) ? 'bg-red-light text-white' : '')
+                  }
+                  key={tag.id}
+                >
+                  {tag.name}
+                </a>
+              ))}
+          </div>
+        </div>
+
         <button
+          type="submit"
           className="bg-blue text-white block w-full rounded-sm mt-8 font-bold text-bold px-4 py-3"
-          onClick={this.handlePost}
         >
           Post Idea
         </button>
-      </div>
+      </form>
     )
   }
 }
 
 export default compose(
   firebaseConnect(), // withFirebase can also be used
-  firestoreConnect(),
-  connect(({ firebase: { auth } }) => ({ auth }))
+  firestoreConnect(['tags']),
+  connect(({ firestore, firebase: { auth } }) => ({
+    auth,
+    tags: firestore.ordered.tags,
+  }))
 )(NewIdeaForm)

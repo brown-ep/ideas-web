@@ -11,7 +11,7 @@ class Home extends Component {
         <div className="container mx-auto max-w-md text-center mt-5">
           <Link
             to="/new"
-            className="bg-blue-lighter px-4 py-3 font-bold no-underline rounded-sm text-blue-dark mb-5 block"
+            className="bg-blue-lightest px-4 py-3 font-bold no-underline rounded-sm text-blue-dark border border-blue-lighter mb-5 block"
           >
             <i className="fas fa-plus mr-2" />
             New Idea
