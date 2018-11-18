@@ -30,7 +30,7 @@ class NewIdeaForm extends Component {
         title: name,
         description,
         name: auth.displayName,
-        user: auth.uid,
+        user: firestore.collection('users').doc(auth.uid),
         created: new Date(),
       })
       .then(() => this.setState({ redirect: true }))
